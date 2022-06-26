@@ -1,0 +1,515 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <style type="text/css">
+  <!--
+    body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 25px;
+    }
+    
+    h1 {
+    font-size: 1.5em;
+    border-bottom: thin outset black;
+    }
+    
+    h2 {
+    margin: 0 0 0.5em 0;
+    font-size: 1em;
+    }
+    
+    h3 {
+    border-bottom: 1px solid #0033FF;
+    border-left: 6px solid #0033FF;
+    padding: 0.25em;
+    font-size: 1em;
+    }
+    
+    h4 {
+    font-size: 0.85em;
+    font-weight: bold;
+    margin: 0.2em 0;
+    }
+    
+    p {
+    font-size: 0.85em;
+    margin: 0.5em 0;
+    }
+    
+    .attention {
+    color:#FF3300
+    }
+    
+    ul {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+    }
+    
+    li {
+    font-size: 0.8em;
+    margin: 0.5em 0;
+    }
+        
+    li p {
+    font-size: 0.8em;
+    margin: 0.5em 0;
+    }
+    
+    .email {
+    padding-left: 1.3em;
+    font-size: small;
+    font-weight: normal;
+    }
+    
+    pre {
+    padding: 0.2em;
+    border: 1px solid #BBBBBB;
+    background-color: #EEEEEE;
+    margin: 1em 1em 1em 3em;
+    overflow: auto;
+    font-size: 0.85em;
+    line-height: 1.5em;
+    }
+    
+    table {
+    font-size: 0.8em;
+    border: solid 1px black;
+    border-collapse: collapse;
+    }
+    
+    th,
+    td
+    {
+    border: solid 1px black;
+    padding: 5px;
+    }
+    
+    span.comment {
+    color: green;
+    font-weight: bold;
+    }
+    
+    .goto {
+    margin: 1em 0 1.5em 0.5em;
+    font-size: 0.8em;
+    }
+
+    .fix {
+    color: red;
+    font-weight: bold;
+    }
+
+    .new {
+    color: blue;
+    font-weight: bold;
+    }
+
+    .center {
+    text-align: center;
+    }
+
+  -->
+  </style>
+  <title>Geeklog Mycaljp プラグイン 説明書</title>
+</head>
+<body>
+  
+<h1><a name="_top">Geeklog Mycaljp プラグイン</a></h1>
+  
+<h2>バージョン: 2.1.2</h2>
+<h2>作成者: Yoshinori Tahara - dengen</h2>
+  
+<h2>公開日:&nbsp;2010.3.6</h2>
+<h2>ライセンス:&nbsp;GPL</h2>
+<h2>概要:</h2>
+  
+<ul>
+  <li>Geeklog用サイトカレンダです。</li>
+  <li>PHPブロック関数版 mycaljp のすべての機能を継承し、さらに機能強化を行っています。</li>
+</ul>
+  <h2>機能:</h2>
+  <ul>
+    <li>コンテンツへのリンクが日付に張られています。日付のリンクをクリックするとその日のコンテンツの一覧が表示されます。</li>
+    <li>特に記事はイントロ部の一覧が表示されます。</li>
+    <li>ユーザーが自由にカレンダのスタイルをカスタマイズできます。</li>
+    <li>Geeklogのテーマごとのスタイル設定が可能です。</li>
+    <li>複数のプリセットテンプレートが用意されています。（現在３種類）</li>
+    <li>管理画面で手軽にコンフィギュレーションが可能です。（検索対象の絞り込みなど、設定変更が可能）</li>
+    <li>土、日、日本の休日の色分け表示が可能です。</li>
+    <li>マルチランゲージに対応しています。</li>
+    <li>アクセシビリティに配慮して、カレンダの読み飛ばし用リンクを配置しています。</li>
+    <li>Ajax技術の活用により月めくりが軽くなっています。</li>
+  </ul>
+  <h2>条件:</h2>
+  <ul>
+    <li class="attention">このプラグインは、バージョン2.1.0以降より、Geeklog 1.6.0 以降用となります。それ以前のバージョンのGeeklogでは動作しません。</li>
+    <li class="attention">Dataproxyプラグインのバージョン1.1.4.1以降を別途インストールする必要があります。（バージョン1.1.4.1は、バージョン1.1.4をmycaljpプラグイン用に機能拡張したものです）</li>
+    <li class="attention">本プラグインをインストールする前に、PHPブロック関数版の mycaljp をアンインストールしてください。</li>
+  </ul>
+  <h2>この説明のセクション:</h2>
+  
+<ul>
+  <li><a href="#_uninstallation_of_prev_version">０） PHPブロック関数版 mycaljp のアンインストール</a></li>
+  <li><a href="#_installation">１） インストール</a></li>
+  <li><a href="#_uninstallation">２） アンインストール</a></li>
+  <li><a href="#_config">３） コンフィギュレーション</a></li>
+  <li><a href="#_customization">４） カスタマイズ（スタイルやレイアウトの変更）</a></li>
+  <li><a href="#_slidecalender">５） スライドカレンダ</a></li>
+  <li><a href="#_history">６） 改訂履歴</a></li>
+</ul>
+
+
+  <h3><a name="_uninstallation_of_prev_version">０） PHPブロック関数版 mycaljp のアンインストール</a></h3>
+  <p>以下の説明で、</p>
+  <ul style="margin:0.5em 0">
+    <li>&lt;geeklog_dir&gt; は、システムの config.php が存在するディレクトリ</li>
+    <li>&lt;public_html&gt; は、lib-common.php が存在するディレクトリ</li>
+    <li>&lt;admin&gt; は、管理者用ファイルが存在するディレクトリ（普通は、&lt;public_html&gt;/admin/ ）</li>
+  </ul>
+  <p style="margin-bottom:1.2em">を表しています。</p>
+  <p class="attention">本プラグインをインストールする前に、PHPブロック関数版の mycaljp をアンインストールしてください。</p>
+  <p>PHPブロック関数版 mycaljp をインストールしていない場合は、このセクションを読み飛ばしてもかまいません。</p>
+  
+  <h4>Step 0 -&nbsp;サイトカレンダ表示用ブロックの削除</h4>
+  <ul>
+    <li>ブロック管理権限をもつユーザーでログインし、サイトカレンダー表示用ブロックを削除します。</li>
+  </ul>
+  <h4>Step 1 -&nbsp;PHPブロック関数の削除</h4>
+  <ul>
+    <li>&lt;geeklog_dir&gt;/system/custom/phpblock_mycaljp.php を削除します。</li>
+  </ul>
+  <h4>Step 2 -&nbsp;lib-custom.phpの内容変更</h4>
+  <ul>
+    <li>&lt;geeklog_dir&gt;/system/lib-custom.php&quot;をテキストエディタで開き、次の文字列を見つけ出し、削除します。</li>
+  </ul>
+  <pre><code>require_once( 'custom/phpblock_mycaljp.php' );</code></pre>
+  <h4>Step 3 -&nbsp;Geeklogテーマ内のテンプレートの削除</h4>
+  <ul>
+    <li>サイトカレンダのカスタマイズを行うために作成された&lt;テーマディレクトリ&gt;/mycaljp/ ディレクトリを削除します。</li>
+    <li>なお、スライドカレンダ用の&lt;テーマディレクトリ&gt;/mycaljp/ ディレクトリは削除する必要はありません。</li>
+  </ul>
+  <h4>Step 4 -&nbsp;ディレクトリの削除</h4>
+  <ul>
+    <li>&lt;public_html&gt;/mycaljp/ ディレクトリを削除します。</li>
+  </ul>
+  <p class="goto"><a href="#_top">Goto Top</a></p>
+
+
+  <h3><a name="_installation">１） インストール</a></h3>
+  <p class="attention">インストールには、手動でプラグイン用のディレクトリを作成し、適切なディレクトリへファイルをコピーする必要があります。</p>
+  <h4>Step 0 -&nbsp;データベースのバックアップ</h4>
+  <ul>
+    
+  <li>mycaljp プラグインはテーブルを追加しませんが、管理者メニューの「DBのバックアップ」や phpMyAdmin を使用して、事前に Geeklog 
+    のデータベースをバックアップしておくことをお勧めします。</li>
+  </ul>
+  <h4>Step 1 -&nbsp;アーカイブの展開</h4>
+  <ul>
+    <li>mycaljp プラグインのアーカイブを &lt;geeklog_dir&gt;/plugins/ ディレクトリに展開します。mycaljp という名前のディレクトリができます。</li>
+  </ul>
+  <h4>Step 2 -&nbsp;必要なディレクトリの作成</h4>
+  <ul>
+    <li>&lt;public_html&gt; ディレクトリの下に mycaljp という名前のディレクトリを作ります。</li>
+    <li>&lt;admin&gt;/plugins/ ディレクトリの下にも mycaljp という名前のディレクトリを作ります。</li>
+  </ul>
+  <h4>Step 3 -&nbsp;必要なファイルのコピー</h4>
+  <ul>
+    <li><span class="geeklog">&lt;geeklog_dir&gt;</span>/plugins/mycaljp/ ディレクトリに移動します。</li>
+    <li>admin ディレクトリの内容を、Step 2 で作成した <span class="admin">&lt;admin&gt;</span>/plugins/mycaljp/ ディレクトリにコピーします。</li>
+    <li>public_html ディレクトリの内容を、Step 2 で作成した <span class="public">&lt;public_html&gt;</span>/mycaljp/ ディレクトリにコピーします。</li>
+  </ul>
+  <h4>Step 4 - プラグインエディタでインストールの実行</h4>
+  <ul>
+    
+  <li>Root ユーザとしてログインし、プラグインエディタから mycaljp プラグインのインストールを実行します。</li>
+    <li>失敗した場合には、エラーログ（ error.log ）を調べます。</li>
+    <li>この時点で、mycaljp プラグインはインストールされ、機能しているはずです。（自動的にサイトカレンダ表示用ブロックが作成されます）</li>
+  </ul>
+  <p class="goto"><a href="#_top">Goto Top</a></p>
+
+
+  <h3><a name="_uninstallation">２） アンインストール</a></h3>
+  <h4>Step 0 - データベースのバックアップ</h4>
+  <ul>
+    <li>mycaljp プラグインはアンインストール時に、テーブルの破棄などは行いませんが、管理者メニューの「DBのバックアップ」や
+    phpMyAdmin を使用して、事前に Geeklog のデータベースをバックアップしておくことをお勧めします。</li>
+  </ul>
+  <h4>Step 1 - プラグインエディタでアンインストールの実行</h4>
+  <ul>
+    <li>プラグインエディタから、mycaljp プラグインをアンインストールします。</li>
+  </ul>
+  <h4>Step 2 - ディレクトリの削除</h4>
+  <ul>
+    <li>インストールの過程で作成した3つのディレクトリ（ &lt;geeklog-dir&gt;/plugins/mycaljp/ 、&lt;public_html&gt;/mycaljp/ 
+    、&lt;admin&gt;/plugins/mycaljp/ ）を削除します。</li>
+  </ul>
+  <p class="goto"><a href="#_top">Goto Top</a></p>
+
+
+  <h3><a name="_config">３） コンフィギュレーション</a></h3>
+  <p>管理画面のコンフィギュレーションから「Mycaljp」を選択すると、本プラグインの各種設定が行えます。<br>
+以下、設定項目を説明します。</p>
+  <h4 style="margin-top:10px;">サイトカレンダのメイン設定</h4>
+  <table summary="サイトカレンダのメイン設定">
+    <tr>
+      <th>設定項目</th>
+      <th>デフォルト値</th>
+      <th>説明</th>
+      <th>該当の配列変数</th>
+    </tr>
+    <tr>
+      <td class="center">ヘッダタイトル（年）</td>
+      <td class="center">'Y年'</td>
+      <td>ヘッダタイトルのうち、年を示す部分のフォーマットを設定します。<br>
+"Y" 年．4 桁の数字．(例: 1999または2003)<br>
+"y" 年．2 桁の数字．(例: 99 または 03)</td>
+      <td>$_MYCALJP2_CONF['headertitleyear']</td>
+    </tr>
+    <tr>
+      <td class="center">ヘッダタイトル（月）</td>
+      <td class="center">'m月'</td>
+      <td>ヘッダタイトルのうち、月を示す部分のフォーマットを設定します。<br>
+"m" 月．数字。先頭にゼロをつける．(01 から 12)<br>
+"n" 月．数字。先頭にゼロをつけない．(1 から 12)<br>
+"F" 月．フルスペルの文字．(January から December)<br>
+"M" 月．3 文字形式．(Jan から Dec)</td>
+      <td>$_MYCALJP2_CONF['headertitlemonth']</td>
+    </tr>
+    <tr>
+      <td class="center">ヘッダタイトルの順序</td>
+      <td class="center">年 月</td>
+      <td>ヘッダタイトルの年と月の表示順序を設定します。<br>一般的に、和風にしたいときは「年 月」、洋風にしたいときは「月 年」を選択します。</td>
+      <td>$_MYCALJP2_CONF['titleorder']</td>
+    </tr>
+    <tr>
+      <td class="center">各曜日タイトル</td>
+      <td class="center">'日' '月' '火' '水' '木' '金' '土'</td>
+      <td>曜日の文字列を設定します。</td>
+      <td>$_MYCALJP2_CONF['sunday']<br>
+$_MYCALJP2_CONF['monday']<br>
+$_MYCALJP2_CONF['tuesday']<br>
+$_MYCALJP2_CONF['wednesday']<br>
+$_MYCALJP2_CONF['thursday']<br>
+$_MYCALJP2_CONF['friday']<br>
+$_MYCALJP2_CONF['saturday']</td>
+    </tr>
+    <tr>
+      <td class="center">土・日・休日を色分け表示する</td>
+      <td class="center">はい</td>
+      <td>土・日・休日を色分け表示の有無を設定します。<br>「はい」を選択すると色分け表示します。<br>「いいえ」を選択すると色分け表示しません。</td>
+      <td>$_MYCALJP2_CONF['showholiday']</td>
+    </tr>
+    <tr>
+      <td class="center">日本の休日を調べる</td>
+      <td class="center">はい</td>
+      <td>日本の休日を調べるかどうかを設定します。<br>「はい」を選択すると日本の休日を色分け表示の対象とします。<br>「いいえ」を選択すると日本の休日を色分け表示の対象としません。</td>
+      <td>$_MYCALJP2_CONF['checkjpholiday']</td>
+    </tr>
+    <tr>
+      <td class="center">右サイドバーを表示する</td>
+      <td class="center">はい</td>
+      <td>日付のリンクをクリックしたあとの、コンテンツの一覧表示画面において、右サイドバーを表示するかどうかを設定します。<br>「はい」を選択すると右サイドバーを表示します。<br>「いいえ」を選択すると右サイドバーを表示しません。</td>
+      <td>$_MYCALJP2_CONF['enablesrblocks']</td>
+    </tr>
+    <tr>
+      <td class="center">記事のイントロを表示する</td>
+      <td class="center">はい</td>
+      <td>日付のリンクをクリックしたあとの、コンテンツの一覧表示画面において、記事のイントロ部を表示するかどうかを設定します。<br>「はい」を選択すると記事のイントロ部を一覧表示します。<br>「いいえ」を選択すると記事のタイトルを一覧表示します。</td>
+      <td>$_MYCALJP2_CONF['showstoriesintro']</td>
+    </tr>
+
+    <tr>
+      <td class="center">テーマのテンプレートを使う</td>
+      <td class="center">いいえ</td>
+      <td>テーマで提供されているテンプレートを適用するかどうかを設定します。<br>&lt;public_html&gt;/layout/テーマ名/mycaljp ディレクトリ内のテンプレートを使用するかどうか設定します。<br>詳細については <a href="#_customization">４） カスタマイズ（スタイルやレイアウトの変更）</a>を参照してください。</td>
+      <td>$_MYCALJP2_CONF['use_theme']</td>
+    </tr>
+    <tr>
+      <td class="center">テンプレート名</td>
+      <td class="center">default</td>
+      <td>サイトカレンダの表示に用いられるテンプレートを選択します。<br>本プラグインには最初から数種類のテンプレートが用意されています。<br>なお、名前に「_multi_language」を含むテンプレートはマルチランゲージ環境用に設定されたものです。</td>
+      <td>$_MYCALJP2_CONF['template']</td>
+    </tr>
+
+    <tr>
+      <td class="center">日付の形式</td>
+      <td class="center">[Y-m-d] </td>
+      <td>サイトカレンダの日付などをクリックした際の検索結果で用いられる日付の形式を設定します。<br>「日付の形式」で使用するパラメータは、PHPの<a href="http://www.php.net/manual/ja/function.date.php">date()関数</a>のformatパラメータと同じです。</td>
+      <td>$_MYCALJP2_CONF['date_format']</td>
+    </tr>
+
+    <tr>
+      <td class="center">サポートするコンテンツ</td>
+      <td class="center">&nbsp;</td>
+      <td>サイトカレンダが検索対象としてサポートするコンテンツを設定します。</td>
+      <td>$_MYCALJP2_CONF['supported_contents']</td>
+    </tr>
+    <tr>
+      <td class="center">有効にするコンテンツ</td>
+      <td class="center">&nbsp;</td>
+      <td>サイトカレンダが検索するコンテンツを設定します。<br>有効：1、無効：0</td>
+      <td>$_MYCALJP2_CONF['enabled_contents']</td>
+    </tr>
+  </table>
+
+  <h4 style="margin-top:10px;">静的ページの設定</h4>
+  <table summary="静的ページの設定">
+    <tr>
+      <th>設定項目</th>
+      <th>デフォルト値</th>
+      <th>説明</th>
+      <th>該当の配列変数</th>
+    </tr>
+    <tr>
+      <td class="center">リストに掲載するタイプ</td>
+      <td class="center">センターブロックに表示されるページのみ</td>
+      <td>サイトカレンダが検索する静的ページの種類を設定します。</td>
+      <td>$_MYCALJP2_CONF['sp_type']</td>
+    </tr>
+    <tr>
+      <td class="center">除外するページID</td>
+      <td class="center">formmail</td>
+      <td>サイトカレンダの検索対象から除外する静的ページを設定します。</td>
+      <td>$_MYCALJP2_CONF['sp_except']</td>
+    </tr>
+  </table>
+  <p class="goto"><a href="#_top">Goto Top</a></p>
+
+
+  <h3><a name="_customization">４） カスタマイズ（スタイルやレイアウトの変更）</a></h3>
+  <p>Geeklog テーマに合わせてサイトカレンダのスタイルやレイアウトを変更する方法を説明します。</p>
+  <p>ここでは、テンプレート「glossy_multi_language」を元にカスタマイズすることを例にして説明します。</p>
+  <p class="attention">PHPブロック関数版 mycaljp のカスタマイズ方法とは異なっていますので、ご注意ください。</p>
+  <p class="attention">また、PHPブロック関数版 mycaljp 用のテンプレートとは互換性がありません。</p>
+  <h4>Step 0 - テンプレートのコピー</h4>
+  <ul>
+    <li>サイトカレンダのテンプレートは &lt;public_html&gt;/mycaljp/templates/ ディレクトリに配置されています。</li>
+    <li>この中の glossy_multi_language ディレクトリおよびその中の全てのファイルを、ご使用中のテーマディレクトリ内にコピーします。</li>
+    <li>ご使用中のテーマディレクトリ内にコピーした glossy_multi_language ディレクトリの名前を mycaljp にリネームします。</li>
+    <li>管理画面のコンフィギュレーション-「Mycaljp」で、「テーマのテンプレートを使う」を「はい」に設定します。</li>
+  </ul>
+  <h4>Step 1 - CSSファイルとテンプレートファイルの変更</h4>
+  <ul>
+    <li>CSSファイルの &lt;テーマディレクトリ&gt;/mycaljp/mycaljp.css をお好みに合わせて変更してください。</li>
+    <li>テンプレートファイルの &lt;テーマディレクトリ&gt;/mycaljp/*.thtml をお好みに合わせて変更してください。</li>
+  </ul>
+  <h4>Step 2 - 配列変数 $_MYCALJP2_CONF の活用</h4>
+  <ul>
+    <li>PHPファイルの &lt;テーマディレクトリ&gt;/mycaljp/config.php で配列変数 $_MYCALJP2_CONF を設定することができます。</li>
+    <li>&lt;テーマディレクトリ&gt;/mycaljp/config.php の配列変数 $_MYCALJP2_CONF による設定は、管理画面でのコンフィギュレーションより優先されます。</li>
+    <li>「曜日タイトル」や「ヘッダタイトルの順序」などテーマ専用に指定したい場合などに活用できます。</li>
+    <li>マルチランゲージ環境で言語ごとに「曜日タイトル」などを変えたい場合などに活用できます。</li>
+    <li>配列変数 $_MYCALJP2_CONF の詳細については、&lt;geeklog-dir&gt;/plugins/mycaljp/install_defaults.php を参照してください。(手抜き^^;)</li>
+  </ul>
+  <p class="goto"><a href="#_top">Goto Top</a></p>
+
+
+  <h3><a name="_slidecalender">５） スライドカレンダ</a></h3>
+  <p>本プラグインには、水平方向に日付を並べた、いわゆるスライドカレンダが同梱されています。</p>
+  <p>スライドカレンダは、水平方向に長い形状であるため、通常サイドバーに表示させることは難しく、ヘッダー部に埋め込まれることが多いようです。</p>
+  <p>ここでは、スライドカレンダをGeeklogテーマのヘッダー部に埋め込む手順を説明します。</p>
+  <p class="attention">PHPブロック関数版 mycaljp に含まれていたスライドカレンダは本プラグインでもそのまま使用することができます。ただし、今回、機能強化していますので更新されることをお勧めします。</p>
+  <p class="attention">スライドカレンダはGeeklogテーマに埋め込んで使用しますので、同時にサイトカレンダのカスタマイズを行うことはできません。</p>
+  <h4>Step 0 - テンプレートのコピー</h4>
+  <ul>
+    <li>&lt;geeklog-dir&gt;/plugins/mycaljp/slidecalender/mycaljp/ ディレクトリおよびその中の全てのファイルを、ご使用中のテーマディレクトリ内にコピーします。</li>
+  </ul>
+
+  <h4>Step 1 - スライドカレンダ用CSSのインポート</h4>
+  <ul>
+    <li>ご使用中のGeeklogテーマのテンプレートファイル（通常は style.css ）をテキストエディタで開き、テキスト中の適切な位置に次の文字列を挿入し保存してください。<br>(@importルールの前にスタイルを記述したり、@importルールの間にスタイルを記述することはできませんので、ご注意ください。)</li>
+  </ul>
+  <pre><code>@import url("mycaljp/mycaljp.css"); /* スライドカレンダ用スタイル */</code></pre>
+
+  <h4>Step 2 - Geeklogテーマのテンプレートファイルの変更</h4>
+  <ul>
+    <li>ご使用中のGeeklogテーマのテンプレートファイル（通常は header.thtml ）をテキストエディタで開き、スライドカレンダを表示させたい位置に次の文字列を挿入し保存してください。<br>これで、スライドカレンダは表示されるようになったはずです。</li>
+  </ul>
+  <pre><code>&lt;?php if (function_exists(mycaljp_slidecalender)) echo mycaljp_slidecalender(); ?&gt;</code></pre>
+
+  <h4>Step 3 - CSSファイルとテンプレートファイルの変更</h4>
+  <ul>
+    <li>CSSファイルの &lt;テーマディレクトリ&gt;/mycaljp/mycaljp.css をお好みに合わせて変更してください。</li>
+    <li>テンプレートファイルの &lt;テーマディレクトリ&gt;/mycaljp/*.thtml をお好みに合わせて変更してください。</li>
+  </ul>
+
+  <h4>Step 4 - 配列変数 $_MYCALJP2_CONF の活用</h4>
+  <ul>
+    <li>４） カスタマイズ（スタイルやレイアウトの変更）の Step 2 をご覧下さい。</li>
+  </ul>
+  <p class="goto"><a href="#_top">Goto Top</a></p>
+
+
+  <h3><a name="_history">６） 改訂履歴</a></h3>
+  <table summary="改訂履歴">
+    <tr>
+      <th>バージョン</th>
+      <th>公開日</th>
+      <th>説明</th>
+    </tr>
+    <tr>
+      <td class="center">2.1.2</td>
+      <td class="center">2010.3.6</td>
+      <td><span class="fix">修正</span>&nbsp;「テーマのテンプレートを使う」機能が実際には動作していなかった問題を修正しました。（ひろろんさんに感謝します。）</td>
+    </tr>
+    <tr>
+      <td class="center">2.1.1</td>
+      <td class="center">2009.11.7</td>
+      <td><span class="fix">修正</span>&nbsp;携帯電話でのカレンダ表示を改善し、月めくり操作が問題なくできるようにしました。</td>
+    </tr>
+    <tr>
+      <td class="center">2.1.0</td>
+      <td class="center">2009.11.3</td>
+      <td><span class="new">追加</span>&nbsp;Geeklog1.6で動作するようにしました。<br>
+          <span class="new">追加</span>&nbsp;Dataproxyに対応しました。（というかDataproxyが必須になりました）<br>
+          <span class="new">追加</span>&nbsp;コンフィギュレーションとオートインストール機能に対応しました。</td>
+    </tr>
+    <tr>
+      <td class="center">2.0.7</td>
+      <td class="center">2009.8.17</td>
+      <td><span class="fix">修正</span>&nbsp;XSS脆弱性を修正しました。</td>
+    </tr>
+    <tr>
+      <td class="center">2.0.6</td>
+      <td class="center">2009.3.28</td>
+      <td><span class="new">追加</span>&nbsp;Auge Bangさんが制作された、「mycaljp専用Black Theme」を同梱しました。(Augeさん、どうも有難うございます!) <br>
+      <span class="fix">修正</span>&nbsp;Geeklog1.5以降で記事のイントロ表示した際に日付が現在の日付になってしまう問題を修正しました。</td>
+    </tr>
+    <tr>
+      <td class="center">2.0.5</td>
+      <td class="center">2008.9.26</td>
+      <td><span class="new">追加</span>&nbsp;インクルード対策を実施しました。</td>
+    </tr>
+    <tr>
+      <td class="center">2.0.4</td>
+      <td class="center">2008.9.17</td>
+      <td><span class="new">追加</span>&nbsp;Calendarjpプラグインに対応しました。</td>
+    </tr>
+    <tr>
+      <td class="center">2.0.3</td>
+      <td class="center">2008.9.15</td>
+      <td><span class="fix">修正</span>&nbsp;CSRF対策のミスを修正しました。</td>
+    </tr>
+    <tr>
+      <td class="center">2.0.2</td>
+      <td class="center">2008.9.10</td>
+      <td><span class="new">追加</span>&nbsp;CSRF対策を施しました(Geeklog1.5以降でのみ有効)。</td>
+    </tr>
+    <tr>
+      <td class="center">2.0.1</td>
+      <td class="center">2008.7.26</td>
+      <td><span class="new">追加</span>&nbsp;Geeklog1.5で動作するようにしました。<br>
+      <span class="fix">修正</span>&nbsp;プラグインバージョンが正常に更新されない問題を修正しました。<br>
+      <span class="fix">修正</span>&nbsp;テンプレートおよびスタイルシートの軽微な修正。</td>
+    </tr>
+    <tr>
+      <td class="center">2.0.0</td>
+      <td class="center">2008.3.21</td>
+      <td>初期バージョン</td>
+    </tr>
+  </table>
+  <p class="goto"><a href="#_top">Goto Top</a></p>
+</body>
+</html>

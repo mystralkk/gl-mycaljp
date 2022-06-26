@@ -1,0 +1,7 @@
+
+<!-- searchresults.thtml -->
+<p><strong>{date_start} ～ {date_end} の検索結果</strong> [{refine_search}]</p>
+<p class="basic"> {lang_found} <b>{num_matches}</b>. ({search_time} {lang_seconds})</p>
+{search_blocks_intro}
+{search_blocks}
+{search_pager}

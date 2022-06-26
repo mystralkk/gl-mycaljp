@@ -1,0 +1,110 @@
+{start_block}
+<form name="mycaljp_admin" id="mycaljp_admin" action="{site_admin_url}/plugins/mycaljp/index.php" method="post">
+  <table border="0" cellspacing="0" cellpadding="3" width="100%">
+    <tr>
+      <td width="200" class="alignright">{lang_blocktitle}:</td>
+      <td><input type="text" size="20" name="title" value="{val_blocktitle}"{xhtml}></td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright aligntop">{lang_headertitleyear}:</td>
+      <td>
+        <input type="text" size="10" name="headertitleyear" value="{headertitleyear}"{xhtml}><br{xhtml}>
+        <p>{lang_infotitleyear}</p>
+      </td>
+    </tr>
+    <tr>
+      <td width="200" class="alignright aligntop">{lang_headertitlemonth}:</td>
+      <td>
+        <input type="text" size="10" name="headertitlemonth" value="{headertitlemonth}"{xhtml}><br{xhtml}>
+        <p>{lang_infotitlemonth}</p>
+      </td>
+    </tr>
+    <tr>
+      <td width="200" class="alignright aligntop">{lang_titleorder}:</td>
+      <td>
+        <input type="radio" name="titleorder" value="1" {val_titleorder_ym}>&nbsp;{lang_titleorder_ym}&nbsp;</input>
+        <input type="radio" name="titleorder" value="0" {val_titleorder_my}>&nbsp;{lang_titleorder_my}&nbsp;</input>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright">{lang_wdays}:</td>
+      <td>
+        <input type="text" size="3" name="sunday"     value="{sunday}"{xhtml}>
+        <input type="text" size="3" name="monday"     value="{monday}"{xhtml}>
+        <input type="text" size="3" name="tuesday"    value="{tuesday}"{xhtml}>
+        <input type="text" size="3" name="wednesday"  value="{wednesday}"{xhtml}>
+        <input type="text" size="3" name="thursday"   value="{thursday}"{xhtml}>
+        <input type="text" size="3" name="friday"     value="{friday}"{xhtml}>
+        <input type="text" size="3" name="saturday"   value="{saturday}"{xhtml}>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright">{lang_showholiday}:</td>
+      <td>
+        <input type="radio" name="showholiday" value="1" {val_showholiday_yes}>&nbsp;{lang_yes}&nbsp;</input>
+        <input type="radio" name="showholiday" value="0" {val_showholiday_no}>&nbsp;{lang_no}&nbsp;</input>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright">{lang_checkjpholiday}:</td>
+      <td>
+        <input type="radio" name="checkjpholiday" value="1" {val_checkjpholiday_yes}>&nbsp;{lang_yes}&nbsp;</input>
+        <input type="radio" name="checkjpholiday" value="0" {val_checkjpholiday_no}>&nbsp;{lang_no}&nbsp;</input>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright">{lang_enablesrblocks}:</td>
+      <td>
+        <input type="radio" name="enablesrblocks" value="1" {val_enablesrblocks_yes}>&nbsp;{lang_yes}&nbsp;</input>
+        <input type="radio" name="enablesrblocks" value="0" {val_enablesrblocks_no}>&nbsp;{lang_no}&nbsp;</input>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright">{lang_showstoriesintro}:</td>
+      <td>
+        <input type="radio" name="showstoriesintro" value="1" {val_showstoriesintro_yes}>&nbsp;{lang_yes}&nbsp;</input>
+        <input type="radio" name="showstoriesintro" value="0" {val_showstoriesintro_no}>&nbsp;{lang_no}&nbsp;</input>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright aligntop">{lang_checkcontents}:</td>
+      <td>
+{checkcontents}
+      </td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright aligntop">{lang_selecttemplates}:</td>
+      <td>
+        <select name="template">
+{selecttemplates}
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td width="200" class="alignright aligntop">{lang_applythemetmplate}:</td>
+      <td>
+{checkthemes}
+        <p>{lang_infoapplythemetemp}</p>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td colspan="2">
+        <input type="submit" value="{lang_save}" name="mode"{xhtml}>
+        <input type="submit" value="{lang_cancel}" name="mode"{xhtml}>
+        <input type="hidden" value="{gltoken}" name="{gltoken_name}"{xhtml}>
+      </td>
+    </tr>
+  </table>
+</form>
+{end_block}

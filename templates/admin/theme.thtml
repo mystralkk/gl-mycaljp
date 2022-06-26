@@ -1,0 +1,1 @@
+        <input type="checkbox" name="themes[]" value="{themeitem}" {val_themeitem}{xhtml}>{themeitem}<br{xhtml}>

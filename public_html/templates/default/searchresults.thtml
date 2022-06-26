@@ -1,0 +1,7 @@
+
+<!-- searchresults.thtml -->
+<p><strong>{lang_headerofdate}{date_start}{lang_middleofdate}{date_end}{lang_footerofdate}</strong> [{refine_search}]</p>
+<p class="basic"> {lang_found} <b>{num_matches}</b>. ({search_time} {lang_seconds})</p>
+{search_blocks_intro}
+{search_blocks}
+{search_pager}
