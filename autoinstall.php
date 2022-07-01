@@ -37,7 +37,7 @@ function plugin_autoinstall_mycaljp($pi_name)
     $info = array(
         'pi_name'         => $pi_name,
         'pi_display_name' => $pi_display_name,
-        'pi_version'      => '2.1.2',
+        'pi_version'      => '2.1.3',
         'pi_gl_version'   => '1.6.0',
         'pi_homepage'     => 'http://www.trybase.com/~dengen/log/'
     );
@@ -92,9 +92,27 @@ function plugin_postinstall_mycaljp($pi_name)
     $result = DB_query( "SELECT COUNT(*) AS c FROM " . $_TABLES['blocks'] . " WHERE phpblockfn = 'phpblock_mycaljp2'" );
     $A = DB_fetchArray ($result);
     if ( $A["c"] < 1 ) {
-        DB_query( "INSERT INTO " . $_TABLES['blocks'] 
-        . " ( is_enabled, name, type, title, tid, blockorder, onleft, phpblockfn, owner_id, group_id ) "
-        . "VALUES ( 1, 'mycaljp', 'phpblock', 'Site Calendar', 'all', 1, 1, 'phpblock_mycaljp2', 2, $blockadmin_id )", 1 );
+				if (is_callable('COM_versionCompare')) {
+					$isGeeklog200 = COM_versionCompare(VERSION, '2.0.0', '>=');
+				} else {
+					$isGeeklog200 = versionCompare(VERSION, '2.0.0', '>=');
+				}
+				
+				if ($isGeeklog200) {
+          DB_query( "INSERT INTO " . $_TABLES['blocks'] 
+          . " ( is_enabled, name, type, title, blockorder, onleft, phpblockfn, owner_id, group_id ) "
+          . "VALUES ( 1, 'mycaljp', 'phpblock', 'Site Calendar', 1, 1, 'phpblock_mycaljp2', 2, $blockadmin_id )", 1 );
+					$bid = DB_insertId();
+					DB_query(
+						"INSERT INTO {$_TABLES['topic_assignments']} (tid, type, subtype, id, inherit, tdefault) "
+						. "VALUES ('all', 'block', '', $bid, 1, 0)"
+					);
+				} else {
+          DB_query( "INSERT INTO " . $_TABLES['blocks'] 
+          . " ( is_enabled, name, type, title, tid, blockorder, onleft, phpblockfn, owner_id, group_id ) "
+          . "VALUES ( 1, 'mycaljp', 'phpblock', 'Site Calendar', 'all', 1, 1, 'phpblock_mycaljp2', 2, $blockadmin_id )", 1 );
+				}
+				
         if ( DB_error() ) {
             COM_errorLog( 'failed insert blocks table', 1 );
             return false;

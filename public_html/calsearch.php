@@ -43,6 +43,9 @@ if (isset($_USER['uid'])) {
     $_USER['uid']   = 1;
 }
 
+define('HAS_GL200', COM_versionCompare(VERSION, '2.0.0', '>='));
+define('HAS_GL222', COM_versionCompare(VERSION, '2.2.2', '>='));
+
 /**
 * Builds items belonging to a category
 *
@@ -184,7 +187,13 @@ function MYCALJP_showStoriesIntro() {
     
     $sql .= "AND (draft_flag = 0) ";
     $sql .= COM_getPermSQL('AND', 0, 2, 's') . ' ';
-    $sql .= COM_getTopicSQL('AND', 0, 's') . ' ';
+		
+		if (HAS_GL200) {
+			$sql .= COM_getTopicSQL('AND', 0, 't') . ' ';
+		} else {
+			$sql .= COM_getTopicSQL('AND', 0, 's') . ' ';
+		}
+		
     $sql .= COM_getLangSQL('sid', 'AND', 's') . ' ';
 
     $userfields = 'u.username, u.fullname';
@@ -196,12 +205,27 @@ function MYCALJP_showStoriesIntro() {
     }
 
     $msql = array();
-    $msql['mysql']="SELECT STRAIGHT_JOIN s.*, UNIX_TIMESTAMP(s.date) AS unixdate, "
-             . 'UNIX_TIMESTAMP(s.expire) AS expireunix, '
-             . $userfields . ", t.topic, t.imageurl "
-             . "FROM {$_TABLES['stories']} AS s, {$_TABLES['users']} AS u, "
-             . "{$_TABLES['topics']} AS t WHERE (s.uid = u.uid) AND (s.tid = t.tid) AND "
-             . $sql . "ORDER BY featured DESC, date DESC";
+		
+		if (HAS_GL200) {
+			$story = new Article();
+			$msql['mysql']="SELECT DISTINCT s.*, UNIX_TIMESTAMP(s.date) AS unixdate, "
+							 . 'UNIX_TIMESTAMP(s.expire) AS expireunix, '
+							 . $userfields . ", t.topic, t.imageurl "
+							 . "FROM {$_TABLES['stories']} AS s, {$_TABLES['users']} AS u, "
+							 . "{$_TABLES['topics']} AS t RIGHT JOIN {$_TABLES['topic_assignments']} AS ta "
+							 . "ON t.tid = ta.tid "
+							 . "WHERE (s.uid = u.uid) AND (ta.type = 'article') AND " . $sql
+							 . "ORDER BY featured DESC, date DESC";
+		} else {
+			require_once $_CONF['path_system'] . 'lib-story.php';
+			$story = new Story();
+			$msql['mysql']="SELECT STRAIGHT_JOIN s.*, UNIX_TIMESTAMP(s.date) AS unixdate, "
+							 . 'UNIX_TIMESTAMP(s.expire) AS expireunix, '
+							 . $userfields . ", t.topic, t.imageurl "
+							 . "FROM {$_TABLES['stories']} AS s, {$_TABLES['users']} AS u, "
+							 . "{$_TABLES['topics']} AS t WHERE (s.uid = u.uid) AND (s.tid = t.tid) AND "
+							 . $sql . "ORDER BY featured DESC, date DESC";
+			}
 /*
     $msql['mssql']="SELECT STRAIGHT_JOIN s.sid, s.uid, s.draft_flag, s.tid, s.date, s.title, cast(s.introtext as text) as introtext, cast(s.bodytext as text) as bodytext, s.hits, s.numemails, s.comments, s.trackbacks, s.related, s.featured, s.show_topic_icon, s.commentcode, s.trackbackcode, s.statuscode, s.expire, s.postmode, s.frontpage, s.in_transit, s.owner_id, s.group_id, s.perm_owner, s.perm_group, s.perm_members, s.perm_anon, s.advanced_editor_mode, "
              . " UNIX_TIMESTAMP(s.date) AS unixdate, "
@@ -213,8 +237,6 @@ function MYCALJP_showStoriesIntro() {
 */
     $result = DB_query ($msql);
 
-    require_once $_CONF['path_system'] . 'lib-story.php';
-    $story = new Story();
     while ($A = DB_fetchArray($result)) {
         $story->loadFromArray($A);
         $retval .= STORY_renderArticle($story, 'y');
@@ -254,7 +276,7 @@ $_dateStart = COM_applyFilter($_GET['datestart']);
 $_dateEnd   = COM_applyFilter($_GET['dateend']);
 
 // $dataproxy is a global object in this script and functions.inc
-$dataproxy =& new Dataproxy($uid);
+$dataproxy = Dataproxy::getInstance($uid);
 $dataproxy->setDateStart(COM_applyFilter($_dateStart));
 $dataproxy->setDateEnd(COM_applyFilter($_dateEnd));
 $drivers = $dataproxy->getAllDriverNames();
@@ -306,9 +328,10 @@ foreach ($drivers as $driver_name) {
 $T->set_var('lang_site_calendar_result', $LANG_MYCALJP['pickup_title']); // ハードコード
 $T->parse('output', 't_index');
 
-$display = COM_siteHeader()
-         . $T->finish($T->get_var('output'))
-         . COM_siteFooter($_MYCALJP2_CONF['enablesrblocks']);
+$display = COM_createHTMLDocument(
+	$T->finish($T->get_var('output')), 
+	['rightblock' => $_MYCALJP2_CONF['enablesrblocks']]
+);
 
 //echo $display;
 COM_output($display);

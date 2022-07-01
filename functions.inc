@@ -36,7 +36,7 @@ if (!defined('GL_VERSION_15')) {
     define('GL_VERSION_15', (version_compare(VERSION, '1.5') >= 0));
 }
 
-if (!defined(CSRF_TOKEN)) {
+if (!defined('CSRF_TOKEN')) {
     define('CSRF_TOKEN', 'token');
 }
 
@@ -471,8 +471,9 @@ function MYCALJP_setLayoutPath_old() // for slidecalendar
 
 
 // もし、テンプレートパス内に config.php があればインクルードする
-@include($_MYCALJP2_CONF['path_layout'] . '/config.php');
-
+if (is_readable($_MYCALJP2_CONF['path_layout'] . '/config.php')) {
+  include $_MYCALJP2_CONF['path_layout'] . '/config.php';
+}
 
 function MYCALJP_getTemplates()
 {
@@ -529,10 +530,10 @@ function MYCALJP_showCalendar( $caltype = 1 )
 
     setlocale(LC_TIME, $_CONF['locale']);
 
-    $tmpmonth = $_GET['moon'];
+    $tmpmonth = isset($_GET['moon']) ? $_GET['moon'] : '';
     if( isset( $GLOBALS['WorkDate'] ) )
         $WorkDate = $GLOBALS['WorkDate'];
-    else if( !isset($tmpmonth) ) 
+    else if( empty($tmpmonth) ) 
         $WorkDate = date("Y-m-d");
     else {
         $WorkDate = $tmpmonth;
@@ -544,8 +545,15 @@ function MYCALJP_showCalendar( $caltype = 1 )
     $firstdayofmonth    = $base - ((date("d", $base) - 1) * _MYCAL_DAY_);
     $daysinmonth        = date("t", $firstdayofmonth);
     $lastdayofmonth     = $firstdayofmonth + (($daysinmonth - 1) * _MYCAL_DAY_);
-    $firstdaytodisplay  = $firstdayofmonth - (strftime ('%w', $firstdayofmonth) * _MYCAL_DAY_);
-    $lastdaytodisplay   = $lastdayofmonth + ((6 - strftime ('%w', $lastdayofmonth)) * _MYCAL_DAY_);
+		
+		if (is_callable('COM_strftime')) {
+			$firstdaytodisplay  = $firstdayofmonth - (COM_strftime ('%w', $firstdayofmonth) * _MYCAL_DAY_);
+			$lastdaytodisplay   = $lastdayofmonth + ((6 - COM_strftime ('%w', $lastdayofmonth)) * _MYCAL_DAY_);
+		} else {
+			$firstdaytodisplay  = $firstdayofmonth - (strftime ('%w', $firstdayofmonth) * _MYCAL_DAY_);
+			$lastdaytodisplay   = $lastdayofmonth + ((6 - strftime ('%w', $lastdayofmonth)) * _MYCAL_DAY_);
+		}
+
     $totaldays          = ((($lastdaytodisplay - $firstdaytodisplay) / _MYCAL_DAY_) + 1);
 //  $totalweeks         = $totaldays / 7;
     $totalweeks         = 6; // 固定してみる
@@ -568,7 +576,7 @@ function MYCALJP_showCalendar( $caltype = 1 )
     $lastdayofyearstr   = date("Y-12-31", $base);
 
 
-    $dataproxy =& new Dataproxy($uid);
+    $dataproxy = Dataproxy::getInstance($uid);
     $drivers = $dataproxy->getAllDriverNames();
     $dataproxy->setDateStart($firststr);
     $dataproxy->setDateEnd($laststr);
@@ -588,7 +596,10 @@ function MYCALJP_showCalendar( $caltype = 1 )
                 $item_date = date("Y-m-d", $item['date']);
                 switch ($driver) {
                     case 'article':
-                        $days[$item_date] |= _STORY_;
+												if (!array_key_exists($item_date, $days)) {
+													$days[$item_date] = 0;
+												}
+												$days[$item_date] += _STORY_;
                         break;
 
                     case 'calendar':
@@ -596,7 +607,10 @@ function MYCALJP_showCalendar( $caltype = 1 )
                         break;
 
                     default:
-                        $days[$item_date] |= _ACTIVE_;
+												if (!array_key_exists($item_date, $days)) {
+													$days[$item_date] = 0;
+												}
+                        $days[$item_date] += _ACTIVE_;
                         break;
                 }
             }
@@ -610,7 +624,7 @@ function MYCALJP_showCalendar( $caltype = 1 )
                 switch ( $pi_name ) {
                 case "calendar":
                 case "calendarjp":
-                    if ( ! MYCALJP_pi_enabled($pi_name) ) continue;
+                    if ( ! MYCALJP_pi_enabled($pi_name) ) continue 2;
                     if ($pi_name == "calendar") {
                         $table = $_TABLES['events'];
                     } else if ($pi_name == "calendarjp") {
@@ -744,8 +758,8 @@ function MYCALJP_getDaysURL(&$events, $timestamp, $base, &$days, $weekday, $calt
     }
     $key = date( "Y-m-d", $timestamp );
     $today = ( date("Y-m-d") == $key );
-    $story  = ( ( $days[ $key ] & _STORY_  ) > 0 );
-    $active = ( ( $days[ $key ] & _ACTIVE_ ) > 0 );
+    $story  = array_key_exists($key, $days) && ( ( $days[ $key ] & _STORY_  ) > 0 );
+    $active = array_key_exists($key, $days) && ( ( $days[ $key ] & _ACTIVE_ ) > 0 );
     $thismonth = ( date( "m", $timestamp ) == date( "m", $base ) );
     $sunday = false;
     $saturday = false;
@@ -760,9 +774,9 @@ function MYCALJP_getDaysURL(&$events, $timestamp, $base, &$days, $weekday, $calt
     }
 
     $event = '';
-    if ( ( ! empty($events) ) && count( $events[$key] ) )
+    if ( ( ! empty($events) ) && array_key_exists($key, $events) && count( $events[$key] ) )
     {
-        while ( list($k,$v) = each($events[$key]) )
+        foreach ($events[$key] as $k => $v)
         {
             if (SEC_hasAccess($v['owner_id'],$v['group_id'],$v['perm_owner'],$v['perm_group'],$v['perm_members'],$v['perm_anon']) > 0)
             {
@@ -872,10 +886,17 @@ function MYCALJP_getDaysURL(&$events, $timestamp, $base, &$days, $weekday, $calt
 //
 function is_Japanese_Holiday($timestamp)
 {
-  $weekday = strftime("%w",$timestamp);  // 日(0),月(1)‥土(6)
-  $year    = strftime("%Y",$timestamp);
-  $month   = strftime("%m",$timestamp);
-  $day     = strftime("%d",$timestamp);
+	if (is_callable('COM_strftime')) {
+		$weekday = COM_strftime("%w",$timestamp);  // 日(0),月(1)‥土(6)
+		$year    = COM_strftime("%Y",$timestamp);
+		$month   = COM_strftime("%m",$timestamp);
+		$day     = COM_strftime("%d",$timestamp);
+	} else {
+		$weekday = strftime("%w",$timestamp);  // 日(0),月(1)‥土(6)
+		$year    = strftime("%Y",$timestamp);
+		$month   = strftime("%m",$timestamp);
+		$day     = strftime("%d",$timestamp);
+	}
 
   switch ( $month )
   {
@@ -994,7 +1015,7 @@ function is_Japanese_Holiday($timestamp)
 * Strips slashes if magic_quotes_gpc is on
 */
 function MYCALJP_stripslashes($var) {
-    if (get_magic_quotes_gpc()) {
+    if (is_callable('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
         if (is_array($var)) {
             return array_map('MYCALJP_stripslashes', $var);
         } else {
@@ -1081,10 +1102,4 @@ if ((!GL_VERSION_15) && (!function_exists('SEC_createToken'))) {
     }
 }
 
-if (!function_exists('COM_output')) {
-    function COM_output($display) {
-        echo $display;
-    }
-}
-
-?>
+include_once __DIR__ . '/lib-compat.php';
